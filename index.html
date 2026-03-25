@@ -152,9 +152,9 @@
         .hero-title {
             font-family: 'Zen Old Mincho', serif;
             font-weight: 900;
-            font-size: clamp(40px, 7vw, 96px);
-            line-height: 1.08; letter-spacing: -.02em;
-            max-width: 860px;
+            font-size: clamp(36px, 5.8vw, 80px);
+            line-height: 1.12; letter-spacing: -.02em;
+            max-width: none;
             opacity:0; transform:translateY(28px);
             animation: fadeUp 1.2s ease .4s forwards;
         }
@@ -244,7 +244,7 @@
         .d4 { transition-delay:.4s; }
 
         /* ─── Shared ─── */
-        section { padding: 120px 60px; position: relative; }
+        section { padding: 120px 60px; position: relative; scroll-margin-top: 80px; }
         .sec-label {
             display:flex; align-items:center; gap:16px; margin-bottom:64px;
         }
@@ -267,7 +267,7 @@
         }
         .about-h2 {
             font-family:'Zen Old Mincho', serif; font-weight:700;
-            font-size: clamp(32px, 3.8vw, 50px); line-height:1.35;
+            font-size: clamp(26px, 2.6vw, 40px); line-height:1.4;
         }
         .about-h2 em { color: var(--gold); font-style:normal; }
         .about-body {
@@ -600,17 +600,8 @@
                 <h2 class="about-h2 reveal">
                     顧客を<em>熱狂的なファン</em>に変えるマーケティング体験
                 </h2>
-                <p class="about-body reveal d1">
-                    Mercは、最先端のマーケティング知識と実績をもとに、
-                    企業の成長を支援します。単なる広告出稿にとどまらず、
-                    ブランドの価値を最大化するための戦略立案から
-                    実行まで、トータルにサポートします。
-                </p>
-                <p class="about-body reveal d2">
-                    私たちは「美しい広告市場をつくる」というミッションのもと、
-                    広告主・媒体社・ユーザーすべてにとって
-                    価値あるエコシステムの実現を目指しています。
-                </p>
+                <p class="about-body reveal d1">Mercは、最先端のマーケティング知識と実績をもとに、企業の成長を支援します。単なる広告出稿にとどまらず、ブランドの価値を最大化するための戦略立案から実行まで、トータルにサポートします。</p>
+                <p class="about-body reveal d2">私たちは「美しい広告市場をつくる」というミッションのもと、広告主・媒体社・ユーザーすべてにとって価値あるエコシステムの実現を目指しています。</p>
                 <div class="about-meta reveal d3">
                     <div class="about-meta-item">
                         <label>Company</label>
