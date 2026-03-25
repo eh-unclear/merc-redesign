@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>株式会社Merc | 美しい広告市場をつくる</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,600&family=Zen+Old+Mincho:wght@400;700;900&family=Noto+Sans+JP:wght@200;300;400&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg:       #09090f;
+            --bg-2:     #111118;
+            --bg-3:     #16161f;
+            --gold:     #c8a96e;
+            --gold-light: #e8c98a;
+            --gold-dim: #8a7148;
+            --cream:    #f0ece4;
+            --cream-dim: #a09888;
+            --text:     #e8e4dc;
+            --text-dim: #52504c;
+            --border:   rgba(200, 169, 110, 0.15);
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Noto Sans JP', sans-serif;
+            font-weight: 300;
+            cursor: none;
+            overflow-x: hidden;
+        }
+
+        /* ─── Cursor ─── */
+        .cursor {
+            position: fixed;
+            width: 8px; height: 8px;
+            background: var(--gold);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            transform: translate(-50%, -50%);
+            transition: width .3s, height .3s, background .3s;
+        }
+        .cursor-ring {
+            position: fixed;
+            width: 36px; height: 36px;
+            border: 1px solid rgba(200,169,110,.5);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width .3s, height .3s, border-color .3s;
+        }
+        body.cursor-hover .cursor        { width:12px; height:12px; background: var(--gold-light); }
+        body.cursor-hover .cursor-ring   { width:52px; height:52px; border-color: rgba(200,169,110,.8); }
+
+        /* ─── Grain ─── */
+        .grain {
+            position: fixed; top:-50%; left:-50%;
+            width:200%; height:200%;
+            pointer-events: none; z-index:9998; opacity:.035;
+            animation: grain 8s steps(10) infinite;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            background-size:256px 256px;
+        }
+        @keyframes grain {
+            0%  { transform: translate(0,0); }    10% { transform: translate(-2%,-3%); }
+            20% { transform: translate(3%,2%); }  30% { transform: translate(-1%,4%); }
+            40% { transform: translate(4%,-1%); } 50% { transform: translate(-3%,3%); }
+            60% { transform: translate(2%,-4%); } 70% { transform: translate(-4%,1%); }
+            80% { transform: translate(1%,-2%); } 90% { transform: translate(3%,-3%); }
+            100%{ transform: translate(0,0); }
+        }
+
+        /* ─── Nav ─── */
+        nav {
+            position: fixed; top:0; left:0; right:0; z-index:1000;
+            padding: 28px 60px;
+            display: flex; align-items: center; justify-content: space-between;
+            transition: all .4s ease;
+        }
+        nav.scrolled {
+            padding: 18px 60px;
+            background: rgba(9,9,15,.88);
+            backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--border);
+        }
+        .nav-logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 22px; font-weight:500;
+            color: var(--cream); letter-spacing:.14em;
+            text-decoration: none; display:flex; align-items:center; gap:6px;
+        }
+        .nav-logo span { color: var(--gold); }
+        .nav-links { display:flex; align-items:center; gap:40px; list-style:none; }
+        .nav-links a {
+            color: var(--cream-dim); text-decoration:none;
+            font-size:11px; letter-spacing:.18em; text-transform:uppercase;
+            font-weight:300; transition: color .3s;
+            position:relative;
+        }
+        .nav-links a::after {
+            content:''; position:absolute; bottom:-4px; left:0;
+            width:0; height:1px; background: var(--gold);
+            transition: width .3s;
+        }
+        .nav-links a:hover { color: var(--gold); }
+        .nav-links a:hover::after { width:100%; }
+
+        /* ─── Hero ─── */
+        #hero {
+            min-height: 100vh;
+            display: flex; flex-direction: column; justify-content: center;
+            position: relative; overflow: hidden;
+            padding: 140px 60px 100px;
+        }
+        .hero-bg {
+            position: absolute; inset:0;
+            background:
+                radial-gradient(ellipse 80% 60% at 75% 35%, rgba(200,169,110,.07) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 80% at 15% 85%, rgba(80,60,160,.04) 0%, transparent 60%);
+            animation: bgPulse 14s ease-in-out infinite alternate;
+        }
+        @keyframes bgPulse {
+            0%   { opacity:1; transform:scale(1); }
+            100% { opacity:.6; transform:scale(1.06); }
+        }
+        .hero-rule {
+            position: absolute; right:0; top:50%;
+            transform: translateY(-50%);
+            width:1px; height:55vh;
+            background: linear-gradient(to bottom, transparent, var(--gold-dim), transparent);
+            opacity:.3;
+        }
+        .hero-eyebrow {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic; font-size:15px;
+            color: var(--gold); letter-spacing:.22em;
+            margin-bottom: 36px;
+            opacity:0; transform:translateY(18px);
+            animation: fadeUp 1s ease .2s forwards;
+        }
+        .hero-title {
+            font-family: 'Zen Old Mincho', serif;
+            font-weight: 900;
+            font-size: clamp(52px, 9.5vw, 124px);
+            line-height: 1.08; letter-spacing: -.02em;
+            max-width: 860px;
+            opacity:0; transform:translateY(28px);
+            animation: fadeUp 1.2s ease .4s forwards;
+        }
+        .hero-title .tagline-en {
+            color: var(--gold);
+            font-style: italic;
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 300;
+            font-size: .58em;
+            display: block;
+            letter-spacing: .06em;
+            margin-top: 12px;
+        }
+        .hero-desc {
+            margin-top: 44px;
+            font-size: 14px; color: var(--cream-dim);
+            line-height: 2.2; max-width: 400px;
+            font-weight:300; letter-spacing:.06em;
+            opacity:0; transform:translateY(18px);
+            animation: fadeUp 1s ease .8s forwards;
+        }
+        .hero-cta {
+            margin-top: 56px;
+            display: flex; align-items: center; gap: 36px;
+            opacity:0; transform:translateY(18px);
+            animation: fadeUp 1s ease 1s forwards;
+        }
+        .btn-outline {
+            display: inline-flex; align-items: center; gap: 12px;
+            padding: 15px 36px;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 14px; font-weight:500; letter-spacing:.14em;
+            text-decoration: none; text-transform: uppercase;
+            transition: all .4s ease; position: relative; overflow:hidden;
+        }
+        .btn-outline::before {
+            content:''; position:absolute; inset:0;
+            background: var(--gold);
+            transform: translateX(-101%);
+            transition: transform .4s ease; z-index:-1;
+        }
+        .btn-outline:hover { color: var(--bg); }
+        .btn-outline:hover::before { transform: translateX(0); }
+        .hero-scroll {
+            position: absolute; bottom:44px; left:60px;
+            display:flex; align-items:center; gap:16px;
+            opacity:0; animation: fadeIn 1s ease 1.5s forwards;
+        }
+        .scroll-line { width:36px; height:1px; background: var(--gold-dim); }
+        .scroll-label {
+            font-family:'Cormorant Garamond', serif;
+            font-style:italic; font-size:12px;
+            color: var(--text-dim); letter-spacing:.2em;
+        }
+        .hero-numerics {
+            position: absolute; right:80px; bottom:80px;
+            display:flex; flex-direction:column; gap:28px;
+            opacity:0; animation: fadeIn 1s ease 1.3s forwards;
+        }
+        .hero-num { text-align:right; }
+        .hero-num-val {
+            font-family:'Cormorant Garamond', serif;
+            font-size:32px; font-weight:300; color: var(--gold); letter-spacing:.05em;
+        }
+        .hero-num-lbl {
+            font-size:9px; color: var(--text-dim);
+            letter-spacing:.2em; text-transform:uppercase;
+        }
+
+        /* ─── Animations ─── */
+        @keyframes fadeUp {
+            to { opacity:1; transform:translateY(0); }
+        }
+        @keyframes fadeIn {
+            to { opacity:1; }
+        }
+        .reveal {
+            opacity:0; transform:translateY(36px);
+            transition: opacity .8s ease, transform .8s ease;
+        }
+        .reveal.visible { opacity:1; transform:translateY(0); }
+        .d1 { transition-delay:.1s; }
+        .d2 { transition-delay:.2s; }
+        .d3 { transition-delay:.3s; }
+        .d4 { transition-delay:.4s; }
+
+        /* ─── Shared ─── */
+        section { padding: 120px 60px; position: relative; }
+        .sec-label {
+            display:flex; align-items:center; gap:16px; margin-bottom:64px;
+        }
+        .sec-line { width:28px; height:1px; background: var(--gold); }
+        .sec-tag {
+            font-family:'Cormorant Garamond', serif; font-style:italic;
+            font-size:13px; color: var(--gold); letter-spacing:.2em;
+        }
+        .sec-idx { font-family:'Cormorant Garamond', serif; font-size:11px; color: var(--text-dim); letter-spacing:.16em; }
+        .divider {
+            height:1px;
+            background: linear-gradient(to right, transparent, var(--gold-dim), transparent);
+            opacity:.25;
+        }
+
+        /* ─── About ─── */
+        #about { background: var(--bg-2); }
+        .about-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap:80px; align-items:center;
+        }
+        .about-h2 {
+            font-family:'Zen Old Mincho', serif; font-weight:700;
+            font-size: clamp(32px, 3.8vw, 50px); line-height:1.35;
+        }
+        .about-h2 em { color: var(--gold); font-style:normal; }
+        .about-body {
+            font-size:14px; line-height:2.2; color: var(--cream-dim);
+            font-weight:300; letter-spacing:.06em; margin-bottom:28px;
+        }
+        .about-meta {
+            display:grid; grid-template-columns:1fr 1fr; gap:24px;
+            margin-top:48px; padding-top:48px; border-top:1px solid var(--border);
+        }
+        .about-meta-item label {
+            font-size:9px; text-transform:uppercase;
+            letter-spacing:.22em; color: var(--gold);
+            display:block; margin-bottom:8px;
+        }
+        .about-meta-item span {
+            font-family:'Zen Old Mincho', serif; font-size:15px; color: var(--cream);
+        }
+        .about-vis { position:relative; height:480px; }
+        .about-vis-main {
+            position:absolute; inset:0 64px 64px 0;
+            background: var(--bg-3); border:1px solid var(--border);
+            display:flex; align-items:center; justify-content:center;
+        }
+        .about-vis-accent {
+            position:absolute; bottom:0; right:0;
+            width:180px; height:180px;
+            border:1px solid rgba(200,169,110,.25);
+        }
+        .about-kanji {
+            font-family:'Zen Old Mincho', serif; font-size:80px; font-weight:900;
+            color: var(--gold); opacity:.22; line-height:1;
+            text-align:center;
+        }
+        .about-kanji-label {
+            font-family:'Cormorant Garamond', serif; font-style:italic;
+            font-size:16px; color: var(--cream-dim); letter-spacing:.1em;
+            text-align:center; margin-top:8px;
+        }
+
+        /* ─── Services ─── */
+        #services { background: var(--bg); }
+        .svc-header {
+            display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:72px;
+        }
+        .svc-h2 {
+            font-family:'Zen Old Mincho', serif; font-weight:700;
+            font-size: clamp(30px, 3.5vw, 46px);
+        }
+        .svc-grid {
+            display:grid; grid-template-columns:repeat(3,1fr);
+            gap:1px; background: var(--border);
+            border:1px solid var(--border);
+        }
+        .svc-card {
+            background: var(--bg); padding:52px 40px;
+            position:relative; overflow:hidden;
+            transition: background .4s;
+        }
+        .svc-card::after {
+            content:''; position:absolute; bottom:0; left:0;
+            width:0; height:2px;
+            background: linear-gradient(to right, var(--gold), var(--gold-light));
+            transition: width .5s;
+        }
+        .svc-card:hover { background: var(--bg-3); }
+        .svc-card:hover::after { width:100%; }
+        .svc-num {
+            font-family:'Cormorant Garamond', serif; font-size:64px; font-weight:300;
+            color: rgba(200,169,110,.1); line-height:1; margin-bottom:32px;
+        }
+        .svc-name-jp {
+            font-family:'Zen Old Mincho', serif; font-size:22px; font-weight:700; margin-bottom:6px;
+        }
+        .svc-name-en {
+            font-family:'Cormorant Garamond', serif; font-style:italic;
+            font-size:13px; color: var(--gold); letter-spacing:.16em; margin-bottom:24px;
+        }
+        .svc-desc {
+            font-size:13px; line-height:2.1; color: var(--cream-dim);
+            font-weight:300; letter-spacing:.04em;
+        }
+
+        /* ─── Partners ─── */
+        #partners { background: var(--bg-2); overflow:hidden; }
+        .partners-h2 {
+            font-family:'Zen Old Mincho', serif; font-weight:700;
+            font-size: clamp(26px, 2.8vw, 38px);
+            text-align:center; margin-bottom:64px;
+        }
+        .marquee-wrap {
+            overflow:hidden; position:relative; margin:0 -60px;
+        }
+        .marquee-wrap::before,
+        .marquee-wrap::after {
+            content:''; position:absolute; top:0; bottom:0; width:120px; z-index:2;
+        }
+        .marquee-wrap::before { left:0; background:linear-gradient(to right, var(--bg-2), transparent); }
+        .marquee-wrap::after  { right:0; background:linear-gradient(to left,  var(--bg-2), transparent); }
+        .marquee-track {
+            display:flex; animation: marquee 28s linear infinite; width:max-content;
+        }
+        .marquee-track:hover { animation-play-state:paused; }
+        @keyframes marquee {
+            from { transform: translateX(0); }
+            to   { transform: translateX(-50%); }
+        }
+        .partner-pill {
+            padding: 30px 56px;
+            border-right: 1px solid var(--border);
+            display:flex; align-items:center; white-space:nowrap;
+        }
+        .partner-pill span {
+            font-family:'Cormorant Garamond', serif; font-size:18px; font-weight:400;
+            color: var(--cream-dim); letter-spacing:.1em;
+            transition: color .3s;
+        }
+        .partner-pill:hover span { color: var(--gold); }
+
+        /* ─── Recruit ─── */
+        #recruit { background: var(--bg); }
+        .recruit-watermark {
+            position:absolute; top:50%; left:50%;
+            transform:translate(-50%,-50%);
+            font-family:'Cormorant Garamond', serif;
+            font-size: clamp(72px, 13vw, 160px);
+            font-weight:600; color:rgba(200,169,110,.035);
+            white-space:nowrap; pointer-events:none;
+            letter-spacing:.12em; text-transform:uppercase;
+        }
+        .recruit-grid {
+            display:grid; grid-template-columns:1fr 1.6fr; gap:80px; align-items:start;
+            position:relative;
+        }
+        .recruit-h2 {
+            font-family:'Zen Old Mincho', serif; font-weight:700;
+            font-size: clamp(32px, 3.8vw, 50px); line-height:1.35;
+        }
+        .recruit-h2 em { color: var(--gold); font-style:normal; display:block; }
+        .recruit-cards { display:flex; flex-direction:column; gap:24px; }
+        .recruit-card {
+            border:1px solid var(--border); padding:36px 40px;
+            position:relative; background: var(--bg-2);
+            transition: border-color .3s, transform .3s;
+        }
+        .recruit-card:hover { border-color: var(--gold); transform: translateX(8px); }
+        .recruit-badge {
+            position:absolute; top:36px; right:40px;
+            background: rgba(200,169,110,.1);
+            border:1px solid rgba(200,169,110,.3);
+            padding:4px 12px; font-size:10px; letter-spacing:.16em;
+            color: var(--gold);
+            font-family:'Cormorant Garamond', serif;
+        }
+        .recruit-card-tag {
+            font-family:'Cormorant Garamond', serif; font-style:italic;
+            font-size:12px; color: var(--gold); letter-spacing:.2em; margin-bottom:10px;
+        }
+        .recruit-card-h3 {
+            font-family:'Zen Old Mincho', serif; font-size:20px; font-weight:700; margin-bottom:14px;
+        }
+        .recruit-card-p {
+            font-size:13px; line-height:2.1; color: var(--cream-dim);
+            font-weight:300; letter-spacing:.04em;
+        }
+
+        /* ─── Contact ─── */
+        #contact {
+            background: var(--bg-2);
+            text-align:center; padding:160px 60px;
+        }
+        .contact-eyebrow {
+            font-family:'Cormorant Garamond', serif; font-style:italic;
+            font-size:16px; color: var(--gold); letter-spacing:.22em;
+            display:block; margin-bottom:28px;
+        }
+        .contact-h2 {
+            font-family:'Zen Old Mincho', serif; font-weight:900;
+            font-size: clamp(40px, 6vw, 80px); line-height:1.2; margin-bottom:20px;
+        }
+        .contact-sub {
+            font-family:'Cormorant Garamond', serif; font-style:italic;
+            font-size:22px; color: var(--gold); letter-spacing:.06em; margin-bottom:48px;
+        }
+        .contact-p {
+            font-size:14px; color: var(--cream-dim); line-height:2.2;
+            max-width:460px; margin:0 auto 64px;
+            font-weight:300; letter-spacing:.06em;
+        }
+        .contact-mail {
+            font-family:'Cormorant Garamond', serif; font-size:24px;
+            color: var(--cream); text-decoration:none; letter-spacing:.1em;
+            border-bottom:1px solid var(--gold-dim); padding-bottom:4px;
+            transition: color .3s, border-color .3s;
+        }
+        .contact-mail:hover { color: var(--gold); border-color: var(--gold); }
+
+        /* ─── Footer ─── */
+        footer {
+            background: var(--bg); padding:60px 60px 40px;
+            border-top:1px solid var(--border);
+        }
+        .footer-top {
+            display:flex; justify-content:space-between; align-items:flex-start;
+            margin-bottom:60px; padding-bottom:60px; border-bottom:1px solid var(--border);
+        }
+        .footer-brand { }
+        .footer-logo {
+            font-family:'Cormorant Garamond', serif;
+            font-size:26px; font-weight:500; color: var(--cream); letter-spacing:.14em;
+        }
+        .footer-logo span { color: var(--gold); }
+        .footer-tagline {
+            font-family:'Cormorant Garamond', serif; font-style:italic;
+            font-size:13px; color: var(--text-dim); letter-spacing:.15em; margin-top:8px;
+        }
+        .footer-nav { display:flex; gap:80px; }
+        .footer-col h4 {
+            font-size:9px; text-transform:uppercase; letter-spacing:.22em;
+            color: var(--gold); margin-bottom:20px; font-weight:400;
+        }
+        .footer-col ul { list-style:none; display:flex; flex-direction:column; gap:12px; }
+        .footer-col a {
+            font-size:13px; color: var(--cream-dim); text-decoration:none;
+            letter-spacing:.04em; transition: color .3s;
+        }
+        .footer-col a:hover { color: var(--gold); }
+        .footer-bottom {
+            display:flex; justify-content:space-between; align-items:center;
+        }
+        .footer-copy { font-size:11px; color: var(--text-dim); letter-spacing:.1em; }
+        .footer-addr { font-size:11px; color: var(--text-dim); letter-spacing:.05em; }
+
+        /* ─── Mobile ─── */
+        @media (max-width:768px) {
+            nav, nav.scrolled { padding:18px 24px; }
+            .nav-links { display:none; }
+            section { padding:80px 24px; }
+            #hero { padding:100px 24px 60px; }
+            .hero-numerics { display:none; }
+            .hero-rule { display:none; }
+            .hero-scroll { left:24px; }
+            .about-grid { grid-template-columns:1fr; gap:48px; }
+            .about-vis { height:280px; }
+            .svc-grid { grid-template-columns:1fr; }
+            .svc-header { flex-direction:column; align-items:flex-start; gap:16px; }
+            .recruit-grid { grid-template-columns:1fr; gap:48px; }
+            .footer-top { flex-direction:column; gap:40px; }
+            .footer-nav { gap:40px; }
+            .footer-bottom { flex-direction:column; gap:12px; text-align:center; }
+            .marquee-wrap { margin:0 -24px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cursor"     id="cursor"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
+    <div class="grain"></div>
+
+    <!-- ─── Navigation ─── -->
+    <nav id="navbar">
+        <a href="#" class="nav-logo">M<span>·</span>ERC</a>
+        <ul class="nav-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#partners">Partners</a></li>
+            <li><a href="#recruit">Recruit</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- ─── Hero ─── -->
+    <section id="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-rule"></div>
+
+        <p class="hero-eyebrow">Advertising &amp; Marketing Agency — Tokyo, 2023</p>
+
+        <h1 class="hero-title">
+            美しい広告市場を<br>つくる
+            <span class="tagline-en">Enrich your heart</span>
+        </h1>
+
+        <p class="hero-desc">
+            株式会社Mercは、ブランドと顧客の間に<br>
+            真の価値あるつながりを生み出す<br>
+            広告・マーケティングエージェンシーです。
+        </p>
+
+        <div class="hero-cta">
+            <a href="#about" class="btn-outline">
+                About Us
+                <svg width="16" height="8" viewBox="0 0 16 8" fill="none">
+                    <path d="M0 4H14M14 4L10 1M14 4L10 7" stroke="currentColor" stroke-width="1.5"/>
+                </svg>
+            </a>
+            <a href="#contact" style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:15px; color:var(--cream-dim); text-decoration:none; letter-spacing:.1em; transition:color .3s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--cream-dim)'">お問い合わせ →</a>
+        </div>
+
+        <div class="hero-scroll">
+            <div class="scroll-line"></div>
+            <span class="scroll-label">scroll</span>
+        </div>
+
+        <div class="hero-numerics">
+            <div class="hero-num">
+                <div class="hero-num-val">7<sup style="font-size:.5em">+</sup></div>
+                <div class="hero-num-lbl">Major Partners</div>
+            </div>
+            <div class="hero-num">
+                <div class="hero-num-val">3</div>
+                <div class="hero-num-lbl">Business Areas</div>
+            </div>
+            <div class="hero-num">
+                <div class="hero-num-val">2023</div>
+                <div class="hero-num-lbl">Founded</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── About ─── -->
+    <section id="about">
+        <div class="sec-label">
+            <div class="sec-line"></div>
+            <span class="sec-tag">About Merc</span>
+            <span class="sec-idx">— 01</span>
+        </div>
+
+        <div class="about-grid">
+            <div>
+                <h2 class="about-h2 reveal">
+                    顧客を<em>熱狂的なファン</em>に変える<br>
+                    マーケティング体験
+                </h2>
+                <p class="about-body reveal d1">
+                    Mercは、最先端のマーケティング知識と実績をもとに、
+                    企業の成長を支援します。単なる広告出稿にとどまらず、
+                    ブランドの価値を最大化するための戦略立案から
+                    実行まで、トータルにサポートします。
+                </p>
+                <p class="about-body reveal d2">
+                    私たちは「美しい広告市場をつくる」というミッションのもと、
+                    広告主・媒体社・ユーザーすべてにとって
+                    価値あるエコシステムの実現を目指しています。
+                </p>
+                <div class="about-meta reveal d3">
+                    <div class="about-meta-item">
+                        <label>Company</label>
+                        <span>株式会社Merc</span>
+                    </div>
+                    <div class="about-meta-item">
+                        <label>Founded</label>
+                        <span>2023年1月</span>
+                    </div>
+                    <div class="about-meta-item">
+                        <label>Representative</label>
+                        <span>津村 雄太</span>
+                    </div>
+                    <div class="about-meta-item">
+                        <label>Location</label>
+                        <span>東京都新宿区</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="about-vis reveal d2">
+                <div class="about-vis-main">
+                    <div>
+                        <div class="about-kanji">広</div>
+                        <div class="about-kanji-label">The Art of Advertising</div>
+                    </div>
+                </div>
+                <div class="about-vis-accent"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── Services ─── -->
+    <section id="services">
+        <div class="svc-header">
+            <div>
+                <div class="sec-label">
+                    <div class="sec-line"></div>
+                    <span class="sec-tag">Services</span>
+                    <span class="sec-idx">— 02</span>
+                </div>
+                <h2 class="svc-h2 reveal">私たちの提供する<br>サービス</h2>
+            </div>
+        </div>
+
+        <div class="svc-grid">
+            <div class="svc-card reveal">
+                <div class="svc-num">01</div>
+                <h3 class="svc-name-jp">広告代理業</h3>
+                <div class="svc-name-en">Advertising Agency</div>
+                <p class="svc-desc">
+                    Google、Yahoo、Meta、Amazon等の主要プラットフォームにおける
+                    デジタル広告の企画・運用・最適化を一括支援。
+                    ROIを最大化するデータドリブンなアプローチで
+                    ビジネス成長に貢献します。
+                </p>
+            </div>
+            <div class="svc-card reveal d1">
+                <div class="svc-num">02</div>
+                <h3 class="svc-name-jp">ASP事業</h3>
+                <div class="svc-name-en">ASP Business</div>
+                <p class="svc-desc">
+                    独自のテクノロジープラットフォームを通じて、
+                    広告配信の効率化・自動化を実現。
+                    スケーラブルなソリューションで
+                    あらゆるビジネスの規模に対応します。
+                </p>
+            </div>
+            <div class="svc-card reveal d2">
+                <div class="svc-num">03</div>
+                <h3 class="svc-name-jp">コンサルティング</h3>
+                <div class="svc-name-en">Consulting</div>
+                <p class="svc-desc">
+                    マーケティング戦略の立案から実行まで、
+                    専門家チームが伴走。市場分析・競合調査・
+                    ブランド戦略など、ビジネスの本質的な課題に
+                    向き合います。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ─── Partners ─── -->
+    <section id="partners">
+        <div class="sec-label" style="justify-content:center;">
+            <div class="sec-line"></div>
+            <span class="sec-tag">Partners</span>
+            <span class="sec-idx">— 03</span>
+            <div class="sec-line"></div>
+        </div>
+        <h2 class="partners-h2 reveal">主要パートナー企業</h2>
+
+        <div class="marquee-wrap">
+            <div class="marquee-track">
+                <div class="partner-pill"><span>Google LLC</span></div>
+                <div class="partner-pill"><span>Yahoo! Japan</span></div>
+                <div class="partner-pill"><span>Amazon Japan</span></div>
+                <div class="partner-pill"><span>LINE</span></div>
+                <div class="partner-pill"><span>SmartNews</span></div>
+                <div class="partner-pill"><span>楽天</span></div>
+                <div class="partner-pill"><span>Meta</span></div>
+                <!-- duplicate for seamless loop -->
+                <div class="partner-pill"><span>Google LLC</span></div>
+                <div class="partner-pill"><span>Yahoo! Japan</span></div>
+                <div class="partner-pill"><span>Amazon Japan</span></div>
+                <div class="partner-pill"><span>LINE</span></div>
+                <div class="partner-pill"><span>SmartNews</span></div>
+                <div class="partner-pill"><span>楽天</span></div>
+                <div class="partner-pill"><span>Meta</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── Recruit ─── -->
+    <section id="recruit">
+        <div class="recruit-watermark">JOIN US</div>
+
+        <div class="sec-label">
+            <div class="sec-line"></div>
+            <span class="sec-tag">Recruit</span>
+            <span class="sec-idx">— 04</span>
+        </div>
+
+        <div class="recruit-grid">
+            <div>
+                <h2 class="recruit-h2 reveal">
+                    共に未来を<br>
+                    <em>つくる人</em>を<br>
+                    求めています
+                </h2>
+                <p class="about-body reveal d1" style="margin-top:32px;">
+                    変革を恐れず、継続的なイノベーションを
+                    楽しめる方と一緒に働きたいと考えています。
+                    マーケティングの最前線で、
+                    キャリアを築きませんか。
+                </p>
+            </div>
+
+            <div class="recruit-cards">
+                <div class="recruit-card reveal d1">
+                    <div class="recruit-badge">OPEN</div>
+                    <div class="recruit-card-tag">Long-term Internship</div>
+                    <h3 class="recruit-card-h3">長期インターン</h3>
+                    <p class="recruit-card-p">
+                        マーケティング・広告運用の実務を通じて、
+                        本質的なスキルを身につけることができます。
+                        残り2名の枠でのご応募をお待ちしています。
+                        週3日〜、フレキシブルな働き方が可能です。
+                    </p>
+                </div>
+                <div class="recruit-card reveal d2">
+                    <div class="recruit-badge">ALWAYS</div>
+                    <div class="recruit-card-tag">Full-time / Contract</div>
+                    <h3 class="recruit-card-h3">正社員・業務委託</h3>
+                    <p class="recruit-card-p">
+                        広告運用・マーケティングコンサルタント・
+                        エンジニアなど、各ポジションで随時募集中。
+                        あなたの強みを最大限に活かせる環境を
+                        用意しています。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── Contact ─── -->
+    <section id="contact">
+        <span class="contact-eyebrow reveal">Let's work together</span>
+        <h2 class="contact-h2 reveal">お問い合わせ</h2>
+        <div class="contact-sub reveal d1">We'd love to hear from you.</div>
+        <p class="contact-p reveal d2">
+            サービスのご相談・お見積り・採用に関するご質問など、
+            お気軽にお問い合わせください。
+            担当者より2営業日以内にご返信いたします。
+        </p>
+        <a href="mailto:info@merc-inc.co.jp" class="contact-mail reveal d3">info@merc-inc.co.jp</a>
+    </section>
+
+    <!-- ─── Footer ─── -->
+    <footer>
+        <div class="footer-top">
+            <div class="footer-brand">
+                <div class="footer-logo">M<span>·</span>ERC</div>
+                <div class="footer-tagline">Enrich your heart</div>
+            </div>
+            <nav class="footer-nav">
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#services">Services</a></li>
+                        <li><a href="#partners">Partners</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Join Us</h4>
+                    <ul>
+                        <li><a href="#recruit">Recruit</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+        <div class="footer-bottom">
+            <span class="footer-copy">© 2024 株式会社Merc. All rights reserved.</span>
+            <span class="footer-addr">東京都新宿区 太田紙興新宿ビル5階</span>
+        </div>
+    </footer>
+
+    <script>
+        /* ── Custom Cursor ── */
+        const cursor     = document.getElementById('cursor');
+        const cursorRing = document.getElementById('cursorRing');
+        let mx = 0, my = 0, rx = 0, ry = 0;
+
+        document.addEventListener('mousemove', e => {
+            mx = e.clientX; my = e.clientY;
+            cursor.style.left = mx + 'px';
+            cursor.style.top  = my + 'px';
+        });
+
+        (function tick() {
+            rx += (mx - rx) * 0.12;
+            ry += (my - ry) * 0.12;
+            cursorRing.style.left = rx + 'px';
+            cursorRing.style.top  = ry + 'px';
+            requestAnimationFrame(tick);
+        })();
+
+        document.querySelectorAll('a, button, .svc-card, .recruit-card').forEach(el => {
+            el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+            el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+        });
+
+        if ('ontouchstart' in window) {
+            cursor.style.display     = 'none';
+            cursorRing.style.display = 'none';
+            document.body.style.cursor = 'auto';
+        }
+
+        /* ── Navbar scroll ── */
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('scrolled', window.scrollY > 60);
+        });
+
+        /* ── Scroll reveal ── */
+        const io = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+        document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+    </script>
+</body>
+</html>
