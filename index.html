@@ -101,6 +101,11 @@
             text-decoration: none; display:flex; align-items:center; gap:6px;
         }
         .nav-logo span { color: var(--gold); }
+        .nav-logo-img {
+            height: 28px;
+            width: auto;
+            filter: brightness(0) invert(1);
+        }
         .nav-links { display:flex; align-items:center; gap:40px; list-style:none; }
         .nav-links a {
             color: var(--cream-dim); text-decoration:none;
@@ -530,7 +535,7 @@
 
     <!-- ─── Navigation ─── -->
     <nav id="navbar">
-        <a href="#" class="nav-logo">M<span>·</span>ERC</a>
+        <a href="#" class="nav-logo"><img src="merc-inc-logo.png" alt="Merc" class="nav-logo-img"></a>
         <ul class="nav-links">
             <li><a href="#about">About</a></li>
             <li><a href="#services">Services</a></li>
